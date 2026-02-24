@@ -69,10 +69,14 @@ export default function App() {
         }),
       });
       const data = await res.json();
-      const reply = data.content?.[0]?.text || "抱歉，發生錯誤。";
-      setMessages([...newMessages, { role: "assistant", content: reply }]);
-    } catch {
-      setMessages([...newMessages, { role: "assistant", content: "連線失敗，請確認 API Key 是否正確。" }]);
+      if (data.error) {
+        setMessages([...newMessages, { role: "assistant", content: `錯誤：${data.error.type}\n${data.error.message}` }]);
+      } else {
+        const reply = data.content?.[0]?.text || "抱歉，發生錯誤。";
+        setMessages([...newMessages, { role: "assistant", content: reply }]);
+      }
+    } catch (err) {
+      setMessages([...newMessages, { role: "assistant", content: `連線失敗：${err.message}\nAPI Key 狀態：${API_KEY ? "已設定（長度" + API_KEY.length + "）" : "未設定"}` }]);
     }
     setLoading(false);
   };
