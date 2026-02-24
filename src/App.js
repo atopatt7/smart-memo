@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
 const STORAGE_KEY = "smart-memo-notes-v2";
-const API_KEY = process.env.REACT_APP_ANTHROPIC_API_KEY;
 
 const systemPrompt = `你是一個聰明的個人助理。用戶會給你工作備忘、待辦事項、靈感或瑣碎細節。
 
@@ -78,13 +77,10 @@ export default function App() {
       : "【現有待辦清單】\n" + (todosContext || "（空）") + "\n\n【用戶新輸入】\n" + userMsg;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": API_KEY,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-calls": "true",
         },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
